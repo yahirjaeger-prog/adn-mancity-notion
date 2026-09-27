@@ -1,0 +1,225 @@
+/*
+ * ADN visual: estilos propios del componente.
+ * Todo cuelga de .mc-adn-visual para que no choque con otros componentes.
+ */
+
+/* Documento del embed: sin márgenes, fondo blanco y sin scroll horizontal */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #FFFFFF;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+.mc-adn-visual {
+  --papel: #FFFFFF;
+  --tinta: #1C2C5B;          /* azul oscuro: contraste */
+  --celeste: #6CABDD;        /* azul celeste: acento */
+  --celeste-medio: #9CC7EA;
+  --celeste-claro: #CFE4F5;
+  --celeste-velo: #EEF6FC;
+  --texto: #202020;
+  --gris: #6B6B6B;
+  --linea: #D9D9D9;
+
+  --display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text",
+          "Segoe UI", Helvetica, Arial, sans-serif;
+
+  --salida: cubic-bezier(.16, 1, .3, 1);
+  --suave: cubic-bezier(.4, 0, .2, 1);
+
+  height: 100%;
+  font-family: var(--sans);
+  color: var(--texto);
+  -webkit-font-smoothing: antialiased;
+}
+
+.mc-adn-visual, .mc-adn-visual *, .mc-adn-visual *::before, .mc-adn-visual *::after { box-sizing: border-box; }
+
+/* La pieza se centra en la altura que tenga el embed */
+.mc-adn-visual .pieza {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
+  margin: 0;
+  padding: 8px 2px;
+}
+
+.mc-adn-visual .rotulo {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 1.4;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--gris);
+}
+
+.mc-adn-visual .rotulo b {
+  font-weight: 500;
+  color: var(--tinta);
+}
+
+.mc-adn-visual button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mc-adn-visual button:focus { outline: none; }
+.mc-adn-visual button:focus-visible {
+  outline: 1px solid var(--celeste);
+  outline-offset: 4px;
+}
+
+/* Con "reducir movimiento", la pieza muestra directamente su estado final */
+@media (prefers-reduced-motion: reduce) {
+  .mc-adn-visual *, .mc-adn-visual *::before, .mc-adn-visual *::after {
+    transition-duration: 0ms !important;
+    transition-delay: 0ms !important;
+    animation: none !important;
+  }
+}
+
+/* ── Componente ───────────────────────── */
+.mc-adn-visual .cabeza {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.mc-adn-visual .pista--corta { display: none; }
+
+.mc-adn-visual .sin-transicion, .mc-adn-visual .sin-transicion * { transition: none !important; animation: none !important; }
+
+.mc-adn-visual .gen {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  column-gap: 28px;
+  padding: 14px 0 12px;
+  border-top: 1px solid var(--linea);
+  cursor: pointer;
+}
+.mc-adn-visual .gen:first-child { border-top-color: var(--tinta); }
+
+.mc-adn-visual .gen__palabra {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+
+.mc-adn-visual .gen__indice {
+  padding-top: 3px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .06em;
+  color: var(--gris);
+  transition: color 300ms ease;
+}
+
+.mc-adn-visual .gen__texto {
+  font-family: var(--display);
+  font-size: 56px;
+  font-weight: 800;
+  font-stretch: 62%;
+  line-height: .86;
+  letter-spacing: -.005em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--tinta);
+  transition: font-stretch 800ms var(--salida);
+}
+
+.mc-adn-visual .gen.is-activo .gen__texto { font-stretch: 76%; }
+.mc-adn-visual .gen.is-activo .gen__indice { color: var(--celeste); }
+
+.mc-adn-visual .gen__nota {
+  grid-column: 1;
+  grid-row: 2;
+  max-width: 36ch;
+  margin: 9px 0 0 24px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--gris);
+}
+
+.mc-adn-visual .gen__escena {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  position: relative;
+  min-width: 0;
+  min-height: 92px;
+}
+
+.mc-adn-visual .gen__escena svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Escudo real, revelado dentro del círculo que dibuja la línea */
+.mc-adn-visual .escudo {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--d);
+  height: var(--d);
+  -webkit-clip-path: circle(0% at 50% 50%);
+  clip-path: circle(0% at 50% 50%);
+  transition: clip-path 900ms var(--salida), -webkit-clip-path 900ms var(--salida);
+}
+.mc-adn-visual .escudo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(1.08);
+  transition: transform 1400ms var(--salida);
+}
+.mc-adn-visual .escudo.is-visible { -webkit-clip-path: circle(50% at 50% 50%); clip-path: circle(50% at 50% 50%); }
+.mc-adn-visual .escudo.is-visible img { transform: none; }
+.mc-adn-visual .semilla { transition: opacity 400ms ease; }
+.mc-adn-visual .semilla.is-oculta { opacity: 0; }
+
+.mc-adn-visual .soporte { transition: none; }
+.mc-adn-visual .soporte.is-en-camino {
+  transition: transform 760ms var(--salida), opacity 380ms ease;
+}
+.mc-adn-visual .soporte__flota.is-flotando { animation: mc-adn-visual-flotar 2400ms var(--suave) 1 both; }
+@keyframes mc-adn-visual-flotar {
+  45% { transform: translateY(-2.5px); }
+}
+
+@media (max-width: 519px) {
+  .mc-adn-visual .pista--larga { display: none; }
+  .mc-adn-visual .pista--corta { display: inline; }
+
+  .mc-adn-visual .gen {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    column-gap: 14px;
+  }
+
+  .mc-adn-visual .gen__texto { font-size: 30px; }
+  .mc-adn-visual .gen.is-activo .gen__texto { font-stretch: 68%; }
+  .mc-adn-visual .gen__indice { padding-top: 1px; }
+  .mc-adn-visual .gen__palabra { gap: 8px; }
+  .mc-adn-visual .gen__nota { margin-left: 22px; font-size: 12px; }
+}
